@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { mockTeachers } from '../mocks/teachers';
 import { mockStudents } from '../mocks/students';
-// Dummy data for attendance and grades
+import AddGradeForm from './AddGradeForm'; // Import AddGradeForm component
+import Attendance from './Attendance'; // Import Attendance component
+
 const mockAttendance = [
     { id: 1, date: '2024-09-01', status: 'Present' },
     { id: 2, date: '2024-09-02', status: 'Absent' },
@@ -14,14 +16,13 @@ const mockGrades = [
 ];
 
 const TeachersDashboard = () => {
+    const navigate = useNavigate(); // Initialize useNavigate
     const [teachers, setTeachers] = useState(mockTeachers);
     const [selectedTeacher, setSelectedTeacher] = useState(null);
     const [students, setStudents] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [attendance, setAttendance] = useState([]);
     const [grades, setGrades] = useState([]);
-
-    const navigate = useNavigate(); // Hook to navigate
 
     const handleTeacherSelect = (teacher) => {
         setSelectedTeacher(teacher);
@@ -52,11 +53,11 @@ const TeachersDashboard = () => {
     };
 
     const handleEditGrades = () => {
-        alert('Edit Grades functionality not yet implemented.');
+        navigate('/add-grade'); // Navigate to AddGradeForm
     };
 
     const handleEditAttendance = () => {
-        alert('Edit Attendance functionality not yet implemented.');
+        navigate('/attendance', { state: { attendanceRecords: attendance } }); // Pass attendance records
     };
 
     const handleLogout = () => {

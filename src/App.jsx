@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard'; // Principal's Dashboard
 import TeachersDashboard from './components/TeachersDashboard'; // Teacher's Dashboard
+import Attendance from './components/attendance'; // Attendance component
+import AddGradeForm from './components/AddGradeForm'; // Add grade form component
 
 function App() {
   return (
@@ -16,9 +18,12 @@ function App() {
         
         {/* Teacher dashboard */}
         <Route path="/teacher-dashboard" element={<TeachersDashboard />} />
+
+        {/* Attendance page */}
+        <Route path="/attendance" element={<Attendance />} />
         
-        {/* If you had a student dashboard (currently commented out) */}
-        {/* <Route path="/student-dashboard" element={<StudentDashboard />} /> */}
+        {/* Add grade form page */}
+        <Route path="/add-grade" element={<AddGradeForm />} />
       </Routes>
     </Router>
   );
