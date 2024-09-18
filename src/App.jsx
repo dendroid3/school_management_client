@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
 // Import your dashboard components here
 import Dashboard from './components/dashboard';
-// import TeacherDashboard from './components/TeacherDashboard';
+import TeachersDashboard from './components/TeachersDashboard';
 // import StudentDashboard from './components/StudentDashboard';
 
 function App() {
@@ -13,8 +13,8 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         {/* Define other routes here */}
         <Route path="/dashboard" element={<Dashboard />} />
-        {/* <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
-        <Route path="/student-dashboard" element={<StudentDashboard />} /> */}
+        <Route path="/teacher-dashboard" element={<TeachersDashboard />} />
+        {/* <Route path="/student-dashboard" element={<StudentDashboard />} /> */}
       </Routes>
       
     </Router>
