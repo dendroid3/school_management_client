@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { mockTeachers } from '../mocks/teachers';
 import { mockStudents } from '../mocks/students';
-
+import AddGradeForm from './Grader';
 // Dummy data for attendance and grades
 const mockAttendance = [
     { id: 1, date: '2024-09-01', status: 'Present' },
