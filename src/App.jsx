@@ -1,18 +1,17 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import LandingPage from './components/LandingPage';
-import Dashboard from './components/dashboard';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import TeachersDashboard from './components/TeachersDashboard';
-import AddGradeForm from './components/AddGradeForm'; // Import AddGradeForm component
+import Attendance from './components/attendance';
+import AddGradeForm from './components/AddGradeForm';
+import LandingPage from './components/LandingPage';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/teacher-dashboard" element={<TeachersDashboard />} />
-        <Route path="/add-grade" element={<AddGradeForm />} /> {/* Add route for AddGradeForm */}
+        <Route path="/teachers-dashboard" element={<TeachersDashboard />} />
+        <Route path="/attendance" element={<Attendance />} />
+        <Route path="/add-grade" element={<AddGradeForm />} />
       </Routes>
     </Router>
   );
