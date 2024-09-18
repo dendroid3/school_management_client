@@ -21,7 +21,7 @@ const LandingPage = () => {
             <p className="text-lg mb-6">Manage the school, view reports, and oversee operations.</p>
             <button 
               className="bg-blue-700 hover:bg-blue-900 text-white font-semibold py-3 px-6 rounded-lg text-lg"
-              onClick={() => navigate('/principal-dashboard')}
+              onClick={() => navigate('/dashboard')}
             >
               Login as Principal
             </button>
