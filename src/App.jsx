@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
-import Dashboard from './components/Dashboard'; // Principal's Dashboard
+import Dashboard from './components/dashboard'; // Principal's Dashboard
 import TeachersDashboard from './components/TeachersDashboard'; // Teacher's Dashboard
 import Attendance from './components/attendance'; // Attendance component
 import AddGradeForm from './components/AddGradeForm'; // Add grade form component
