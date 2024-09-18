@@ -14,7 +14,7 @@ const LandingPage = () => {
 
       {/* Main content */}
       <main className="flex-grow flex items-center justify-center">
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-8 p-6 max-w-6xl mx-auto">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 max-w-6xl mx-auto">
           {/* Principal Section */}
           <div className="bg-white text-gray-800 p-8 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
             <h2 className="text-3xl font-bold mb-4 text-blue-600">Principal</h2>
@@ -36,18 +36,6 @@ const LandingPage = () => {
               onClick={() => navigate('/teacher-dashboard')}
             >
               Login as Teacher
-            </button>
-          </div>
-
-          {/* Student Section */}
-          <div className="bg-white text-gray-800 p-8 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
-            <h2 className="text-3xl font-bold mb-4 text-blue-600">Student</h2>
-            <p className="text-lg mb-6">View your grades, attendance, and get personalized updates.</p>
-            <button 
-              className="bg-blue-700 hover:bg-blue-900 text-white font-semibold py-3 px-6 rounded-lg text-lg"
-              onClick={() => navigate('/student-dashboard')}
-            >
-              Login as Student
             </button>
           </div>
         </section>

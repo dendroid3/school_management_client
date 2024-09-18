@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { mockTeachers } from '../mocks/teachers';
 import { mockStudents } from '../mocks/students';
-import AddGradeForm from './Grader';
-// Dummy data for attendance and grades
+import AddGradeForm from './AddGradeForm'; // Import AddGradeForm component
+
 const mockAttendance = [
     { id: 1, date: '2024-09-01', status: 'Present' },
     { id: 2, date: '2024-09-02', status: 'Absent' },
@@ -14,6 +15,7 @@ const mockGrades = [
 ];
 
 const TeachersDashboard = () => {
+    const navigate = useNavigate(); // Initialize useNavigate
     const [teachers, setTeachers] = useState(mockTeachers);
     const [selectedTeacher, setSelectedTeacher] = useState(null);
     const [students, setStudents] = useState([]);
@@ -50,7 +52,7 @@ const TeachersDashboard = () => {
     };
 
     const handleEditGrades = () => {
-        alert('Edit Grades functionality not yet implemented.');
+        navigate('/add-grade'); // Navigate to AddGradeForm
     };
 
     const handleEditAttendance = () => {
@@ -162,4 +164,3 @@ const TeachersDashboard = () => {
 };
 
 export default TeachersDashboard;
-

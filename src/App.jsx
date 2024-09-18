@@ -1,22 +1,19 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
-// Import your dashboard components here
 import Dashboard from './components/dashboard';
 import TeachersDashboard from './components/TeachersDashboard';
-// import StudentDashboard from './components/StudentDashboard';
+import AddGradeForm from './components/AddGradeForm'; // Import AddGradeForm component
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        {/* Define other routes here */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/teacher-dashboard" element={<TeachersDashboard />} />
-        {/* <Route path="/student-dashboard" element={<StudentDashboard />} /> */}
+        <Route path="/add-grade" element={<AddGradeForm />} /> {/* Add route for AddGradeForm */}
       </Routes>
-      
     </Router>
   );
 }
