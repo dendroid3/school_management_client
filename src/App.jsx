@@ -1,9 +1,13 @@
-import React from 'react'
+import React from 'react';
+import TeachersDashboard from './components/TeachersDashboard';
+import './index.css'; // Ensure Tailwind CSS is imported
 
-function App() {
+const App = () => {
   return (
-    <div>App</div>
-  )
-}
+    <div className="App">
+      <TeachersDashboard />
+    </div>
+  );
+};
 
-export default App
+export default App;
