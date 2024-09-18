@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'; // Import useLocation
 
 const Attendance = () => {
+  const location = useLocation();
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [studentName, setStudentName] = useState("");
   const [isPresent, setIsPresent] = useState(true);
   const [error, setError] = useState("");
   const [editingRecord, setEditingRecord] = useState(null);
+
+  useEffect(() => {
+    // Get the attendance records from location state
+    if (location.state && location.state.attendanceRecords) {
+      setAttendanceRecords(location.state.attendanceRecords);
+    }
+  }, [location.state]);
 
   const handleAddOrUpdateAttendance = (e) => {
     e.preventDefault();
@@ -48,7 +57,6 @@ const Attendance = () => {
     setIsPresent(record.present);
   };
 
-  // Calculate cumulative attendance for each student
   const cumulativeAttendance = attendanceRecords.reduce((acc, record) => {
     const { name, present } = record;
     if (!acc[name]) {
