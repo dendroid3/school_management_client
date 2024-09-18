@@ -3,20 +3,22 @@ import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
   const [isPrincipalLogin, setIsPrincipalLogin] = useState(false);
-  const [isTeacherStudentLogin, setIsTeacherStudentLogin] = useState(false);
+  const [isTeacherLogin, setIsTeacherLogin] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
   const navigate = useNavigate();
 
+  // Mock login for Principal
   const handlePrincipalLogin = (e) => {
     e.preventDefault();
-    // Logic for principal login (later connect to backend)
-    navigate('/dashboard');
+    // Logic for principal login (connect to backend later)
+    navigate('/dashboard'); // Redirect to principal dashboard
   };
 
-  const handleTeacherStudentLogin = (e) => {
+  // Mock login for Teacher
+  const handleTeacherLogin = (e) => {
     e.preventDefault();
-    // Logic for teacher/student login (later connect to backend)
-    navigate(isSignup ? '/signup' : '/teacher-dashboard');
+    // Logic for teacher login (connect to backend later)
+    navigate('/teacher-dashboard'); // Redirect to teacher dashboard
   };
 
   return (
@@ -24,13 +26,14 @@ const LandingPage = () => {
       {/* Header */}
       <header className="bg-blue-600 text-white p-6 text-center shadow-md">
         <h1 className="text-6xl font-extrabold">School Management System</h1>
-        <p className="text-2xl mt-2">Connecting Students, Teachers, and Principals</p>
+        <p className="text-2xl mt-2">Connecting Teachers and Principals</p>
       </header>
 
       {/* Main content */}
       <main className="flex-grow flex flex-col items-center justify-center space-y-8 p-6">
-        {!isPrincipalLogin && !isTeacherStudentLogin && (
-          <section className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {/* Initial Options: Choose between Principal or Teacher */}
+        {!isPrincipalLogin && !isTeacherLogin && (
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
             {/* Principal Section */}
             <div className="bg-white text-gray-800 p-8 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
               <h2 className="text-3xl font-bold mb-4 text-blue-600">Principal</h2>
@@ -49,21 +52,9 @@ const LandingPage = () => {
               <p className="text-lg mb-6">Manage students, update grades, and track attendance.</p>
               <button
                 className="bg-blue-700 hover:bg-blue-900 text-white font-semibold py-3 px-6 rounded-lg text-lg"
-                onClick={() => setIsTeacherStudentLogin(true)}
+                onClick={() => setIsTeacherLogin(true)}
               >
                 Login as Teacher
-              </button>
-            </div>
-
-            {/* Student Section */}
-            <div className="bg-white text-gray-800 p-8 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
-              <h2 className="text-3xl font-bold mb-4 text-blue-600">Student</h2>
-              <p className="text-lg mb-6">View your grades, attendance, and get personalized updates.</p>
-              <button
-                className="bg-blue-700 hover:bg-blue-900 text-white font-semibold py-3 px-6 rounded-lg text-lg"
-                onClick={() => setIsTeacherStudentLogin(true)}
-              >
-                Login as Student
               </button>
             </div>
           </section>
@@ -104,11 +95,11 @@ const LandingPage = () => {
           </form>
         )}
 
-        {/* Teacher/Student Sign-In/Sign-Up Form */}
-        {isTeacherStudentLogin && (
-          <form className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full" onSubmit={handleTeacherStudentLogin}>
+        {/* Teacher Login Form */}
+        {isTeacherLogin && (
+          <form className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full" onSubmit={handleTeacherLogin}>
             <h2 className="text-2xl font-bold text-blue-600 mb-6">
-              {isSignup ? 'Sign Up' : 'Login'} as {isSignup ? 'Teacher/Student' : 'Teacher/Student'}
+              {isSignup ? 'Sign Up' : 'Login'} as Teacher
             </h2>
             <div className="mb-4">
               <label htmlFor="email" className="block text-lg font-semibold mb-2">Email</label>
@@ -134,7 +125,7 @@ const LandingPage = () => {
             <button
               type="button"
               className="text-blue-600 mt-4 underline"
-              onClick={() => setIsTeacherStudentLogin(false)}
+              onClick={() => setIsTeacherLogin(false)}
             >
               Go Back
             </button>
