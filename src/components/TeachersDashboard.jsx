@@ -37,7 +37,6 @@ const TeachersDashboard = () => {
     };
 
     const handleAddStudent = () => {
-        // Logic to add a student (this would be expanded to include form input)
         const newStudent = {
             id: students.length + 1,
             name: `New Student ${students.length + 1}`,
@@ -47,37 +46,34 @@ const TeachersDashboard = () => {
     };
 
     const handleRemoveStudent = (studentId) => {
-        // Logic to remove a student
         setStudents(students.filter(student => student.id !== studentId));
     };
 
     const handleEditGrades = () => {
-        // Logic to edit grades (this would be expanded to include form input)
         alert('Edit Grades functionality not yet implemented.');
     };
 
     const handleEditAttendance = () => {
-        // Logic to edit attendance (this would be expanded to include form input)
         alert('Edit Attendance functionality not yet implemented.');
     };
 
     return (
-        <div className="p-8 min-h-screen bg-gray-100">
-            <h1 className="text-3xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300">
+        <div className="p-8 min-h-screen bg-white">
+            <h1 className="text-3xl font-bold mb-6 text-blue-700">
                 Teachers' Dashboard
             </h1>
 
-            <div className="flex bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300 p-4 rounded-lg shadow-md">
-                <div className="w-1/4 p-4 bg-gradient-to-r from-blue-200 to-blue-400 shadow-md rounded-lg">
-                    <h2 className="text-2xl font-semibold mb-4 text-white">Teachers</h2>
-                    <p className="text-white mb-4">Total Teachers: {teachers.length}</p>
+            <div className="flex">
+                <div className="w-1/4 p-4 bg-blue-600 shadow-md rounded-lg text-white">
+                    <h2 className="text-2xl font-semibold mb-4">Teachers</h2>
+                    <p className="mb-4">Total Teachers: {teachers.length}</p>
                     <ul className="space-y-2">
                         {teachers.map(teacher => {
                             const teacherStudentsCount = mockStudents.filter(student => student.teacherId === teacher.id).length;
                             return (
                                 <li
                                     key={teacher.id}
-                                    className={`p-2 cursor-pointer ${selectedTeacher?.id === teacher.id ? 'bg-blue-300' : 'hover:bg-blue-200'} text-white rounded-md`}
+                                    className={`p-2 cursor-pointer ${selectedTeacher?.id === teacher.id ? 'bg-blue-300' : 'hover:bg-blue-500'} rounded-md`}
                                     onClick={() => handleTeacherSelect(teacher)}
                                 >
                                     {teacher.name} - {teacherStudentsCount} Students
@@ -91,7 +87,7 @@ const TeachersDashboard = () => {
                     {selectedTeacher && (
                         <>
                             <h2 className="text-2xl font-semibold mb-4 text-gray-800">Students</h2>
-                            <div className="mb-6 p-4 bg-gradient-to-r from-blue-300 to-blue-500 shadow-md rounded-lg">
+                            <div className="mb-6 p-4 bg-blue-100 shadow-md rounded-lg">
                                 <button
                                     className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                                     onClick={handleAddStudent}
@@ -122,7 +118,7 @@ const TeachersDashboard = () => {
 
                     {selectedStudent && (
                         <>
-                            <div className="mb-6 p-6 bg-gradient-to-r from-blue-200 to-blue-400 shadow-md rounded-lg">
+                            <div className="mb-6 p-6 bg-blue-100 shadow-md rounded-lg">
                                 <h2 className="text-2xl font-semibold mb-4 text-gray-800">Attendance</h2>
                                 <div className="space-y-2">
                                     {attendance.map(record => (
@@ -139,7 +135,7 @@ const TeachersDashboard = () => {
                                     Edit Attendance
                                 </button>
                             </div>
-                            <div className="p-6 bg-gradient-to-r from-blue-400 to-blue-600 shadow-md rounded-lg">
+                            <div className="p-6 bg-blue-100 shadow-md rounded-lg">
                                 <h2 className="text-2xl font-semibold mb-4 text-gray-800">Grades</h2>
                                 <div className="space-y-2">
                                     {grades.map(grade => (

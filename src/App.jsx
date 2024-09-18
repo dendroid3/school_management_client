@@ -1,13 +1,24 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import LandingPage from './components/LandingPage';
+// Import your dashboard components here
+import Dashboard from './components/dashboard';
 import TeachersDashboard from './components/TeachersDashboard';
-import './index.css'; // Ensure Tailwind CSS is imported
+// import StudentDashboard from './components/StudentDashboard';
 
-const App = () => {
+function App() {
   return (
-    <div className="App">
-      <TeachersDashboard />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        {/* Define other routes here */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/teacher-dashboard" element={<TeachersDashboard />} />
+        {/* <Route path="/student-dashboard" element={<StudentDashboard />} /> */}
+      </Routes>
+      
+    </Router>
   );
-};
+}
 
 export default App;
