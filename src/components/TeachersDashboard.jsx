@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { mockTeachers } from '../mocks/teachers';
 import { mockStudents } from '../mocks/students';
 import StudentForm from './StudentForm'; // Import the StudentForm component
-import Attendance from './Attendance';
+import Attendance from './attendance';
 import AddGradeForm from './AddGradeForm';
 
 const mockAttendance = [
@@ -57,7 +57,7 @@ const TeachersDashboard = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-white">
+        <div className="relative flex min-h-screen bg-white">
             <div className="w-1/4 min-h-screen p-4 bg-blue-600 shadow-md rounded-lg text-white">
                 <h2 className="text-2xl font-semibold mb-4">Teachers</h2>
                 <ul className="space-y-2">
@@ -71,14 +71,17 @@ const TeachersDashboard = () => {
                         </li>
                     ))}
                 </ul>
+                <button
+                    className="absolute bottom-4 left-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                    onClick={handleLogout}
+                >
+                    Logout
+                </button>
             </div>
 
             <div className="w-3/4 p-8">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold text-blue-700">Teachers' Dashboard</h1>
-                    <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700" onClick={handleLogout}>
-                        Logout
-                    </button>
                 </div>
 
                 {selectedTeacher && (
