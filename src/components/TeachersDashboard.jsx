@@ -1,11 +1,10 @@
-// TeachersDashboard.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { mockTeachers } from '../mocks/teachers';
 import { mockStudents } from '../mocks/students';
 import StudentForm from './StudentForm'; // Import the StudentForm component
-import Attendance from './attendance';
-import AddGradeForm from './AddGradeForm';
+import Attendance from './attendance'; // Import Attendance component
+import AddGradeForm from './AddGradeForm'; // Import AddGradeForm component
 
 const mockAttendance = [
     { id: 1, date: '2024-09-01', status: 'Present' },
@@ -50,12 +49,12 @@ const TeachersDashboard = () => {
         setSelectedStudent(null); // Deselect student if they are removed
     };
 
-    const handleEditGrades = () => {
-        navigate('/add-grade');
+    const handleEditAttendance = () => {
+        navigate('/attendance', { state: { studentName: selectedStudent?.name, attendanceRecords: attendance } });
     };
 
-    const handleEditAttendance = () => {
-        navigate('/attendance', { state: { attendanceRecords: attendance } });
+    const handleEditGrades = () => {
+        navigate('/add-grade', { state: { studentName: selectedStudent?.name } });
     };
 
     const handleLogout = () => {
@@ -123,6 +122,7 @@ const TeachersDashboard = () => {
 
                 {selectedStudent && (
                     <>
+                        {/* Attendance Section */}
                         <div className="mb-6 p-6 bg-blue-100 shadow-md rounded-lg">
                             <h2 className="text-2xl font-semibold mb-4 text-gray-800">Attendance</h2>
                             {attendance.map(record => (
@@ -138,6 +138,8 @@ const TeachersDashboard = () => {
                                 Edit Attendance
                             </button>
                         </div>
+
+                        {/* Grades Section */}
                         <div className="p-6 bg-blue-100 shadow-md rounded-lg">
                             <h2 className="text-2xl font-semibold mb-4 text-gray-800">Grades</h2>
                             {grades.map(grade => (
