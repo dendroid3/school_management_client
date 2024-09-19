@@ -1,15 +1,13 @@
+// StudentForm.js
 import React, { useState } from 'react';
 
-// Form for adding new students.
 const StudentForm = ({ addStudent }) => {
   const [name, setName] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (name.trim() === '') {
-      return; // Ignore empty submissions
-    }
-    addStudent({ name });
+    if (name.trim() === '') return; // Ignore empty submissions
+    addStudent({ id: Date.now(), name }); // Use a unique ID for the new student
     setName('');
   };
 
