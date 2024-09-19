@@ -1,3 +1,4 @@
+// TeachersDashboard.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { mockTeachers } from '../mocks/teachers';
@@ -42,6 +43,11 @@ const TeachersDashboard = () => {
             ...prevStudents,
             { ...newStudent, teacherId: selectedTeacher.id },
         ]);
+    };
+
+    const removeStudent = (studentId) => {
+        setStudents((prevStudents) => prevStudents.filter(student => student.id !== studentId));
+        setSelectedStudent(null); // Deselect student if they are removed
     };
 
     const handleEditGrades = () => {
@@ -98,10 +104,17 @@ const TeachersDashboard = () => {
                             {students.map(student => (
                                 <li
                                     key={student.id}
-                                    className="p-2 border rounded-md bg-gray-50 cursor-pointer hover:bg-gray-100"
-                                    onClick={() => handleStudentSelect(student)}
+                                    className="p-2 border rounded-md bg-gray-50 flex justify-between items-center cursor-pointer hover:bg-gray-100"
                                 >
-                                    {student.name}
+                                    <span onClick={() => handleStudentSelect(student)}>
+                                        {student.name}
+                                    </span>
+                                    <button
+                                        className="ml-4 px-2 py-1 bg-red-600 text-white rounded-md hover:bg-red-700"
+                                        onClick={() => removeStudent(student.id)}
+                                    >
+                                        Remove
+                                    </button>
                                 </li>
                             ))}
                         </ul>
