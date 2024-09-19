@@ -1,7 +1,6 @@
-
-// student_form.jsx
 import React, { useState } from 'react';
 
+// Form for adding new students.
 const StudentForm = ({ addStudent }) => {
   const [name, setName] = useState('');
 

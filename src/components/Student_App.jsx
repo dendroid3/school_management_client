@@ -1,7 +1,7 @@
-// StudentApp.jsx
 import React, { useState } from 'react';
 import StudentForm from './StudentForm';
 
+// Main component for student management, containing the student form.
 const StudentApp = () => {
   const [students, setStudents] = useState([]);
 
