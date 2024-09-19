@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { mockTeachers } from '../mocks/teachers';
 import { mockStudents } from '../mocks/students';
-import AddGradeForm from './AddGradeForm'; // Import AddGradeForm component
 import Attendance from './attendance'; // Import Attendance component
 
 const mockAttendance = [
@@ -52,12 +51,12 @@ const TeachersDashboard = () => {
         setStudents(students.filter(student => student.id !== studentId));
     };
 
-    const handleEditGrades = () => {
-        navigate('/add-grade'); // Navigate to AddGradeForm
+    const handleEditAttendance = () => {
+        navigate('/attendance', { state: { studentName: selectedStudent?.name, attendanceRecords: attendance } }); // Pass attendance records with student's name
     };
 
-    const handleEditAttendance = () => {
-        navigate('/attendance', { state: { attendanceRecords: attendance } }); // Pass attendance records
+    const handleEditGrades = () => {
+        navigate('/add-grade', { state: { studentName: selectedStudent?.name } }); // Navigate and pass the student's name for grading
     };
 
     const handleLogout = () => {
@@ -132,6 +131,7 @@ const TeachersDashboard = () => {
 
                 {selectedStudent && (
                     <>
+                        {/* Attendance Section */}
                         <div className="mb-6 p-6 bg-blue-100 shadow-md rounded-lg">
                             <h2 className="text-2xl font-semibold mb-4 text-gray-800">Attendance</h2>
                             <div className="space-y-2">
@@ -149,6 +149,8 @@ const TeachersDashboard = () => {
                                 Edit Attendance
                             </button>
                         </div>
+
+                        {/* Grades Section */}
                         <div className="p-6 bg-blue-100 shadow-md rounded-lg">
                             <h2 className="text-2xl font-semibold mb-4 text-gray-800">Grades</h2>
                             <div className="space-y-2">
