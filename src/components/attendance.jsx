@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Attendance = () => {
   const [attendanceRecords, setAttendanceRecords] = useState([]);
@@ -30,10 +30,9 @@ const Attendance = () => {
 
   const validateName = (name) => /^[A-Za-z]+$/.test(name);
 
-  const handleAddOrUpdateAttendance = (e) => {
+  const handleAddOrUpdateAttendance = async (e) => {
     e.preventDefault();
 
-    // Validate required fields
     if (!firstName || !lastName || !attendanceDate) {
       showErrorMessage("First name, last name, and date are required");
       return;
@@ -41,7 +40,6 @@ const Attendance = () => {
 
     const studentName = `${firstName} ${lastName}`;
 
-    // Validate name length and characters
     if (studentName.length > 20) {
       showErrorMessage("Name must not exceed 20 characters");
       return;
@@ -51,49 +49,59 @@ const Attendance = () => {
       return;
     }
 
+    // Check if both first name and last name already exist
+    const existingStudentIndex = attendanceRecords.findIndex(
+      (record) => record.name === studentName
+    );
+
+    if (existingStudentIndex > -1) {
+      showErrorMessage("This student already exists.");
+      return;
+    }
+
     const selectedYear = new Date(attendanceDate).getFullYear();
     if (selectedYear !== currentYear) {
       showErrorMessage("Attendance date must be in the current year");
       return;
     }
 
-    const existingRecordIndex = attendanceRecords.findIndex(
-      (record) => record.name === studentName
-    );
+    const newRecord = {
+      id: generateId(),
+      name: studentName,
+      present: [attendanceDate],
+      absent: [],
+    };
 
-    if (existingRecordIndex > -1) {
-      const existingRecord = attendanceRecords[existingRecordIndex];
-      // Check for duplicate date in present or absent days
-      if (
-        existingRecord.present.includes(attendanceDate) ||
-        existingRecord.absent.includes(attendanceDate)
-      ) {
-        showErrorMessage(
-          "Attendance record for this student on this date already exists"
-        );
-        return;
+    setAttendanceRecords((prevRecords) => {
+      const updatedRecords = [...prevRecords, newRecord];
+      localStorage.setItem("attendanceRecords", JSON.stringify(updatedRecords));
+      return updatedRecords;
+    });
+
+    showSuccessMessage("Attendance added successfully!");
+
+    const payload = {
+      student_id: newRecord.id,
+      attendance_date: attendanceDate,
+      status: "present",
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/api/attendance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to add/update attendance");
       }
-
-      // Add date to present days
-      existingRecord.present.push(attendanceDate);
-      setAttendanceRecords([
-        ...attendanceRecords.slice(0, existingRecordIndex),
-        existingRecord,
-        ...attendanceRecords.slice(existingRecordIndex + 1),
-      ]);
-      showSuccessMessage("Attendance updated successfully!");
-    } else {
-      const newRecord = {
-        id: generateId(),
-        name: studentName,
-        present: [attendanceDate],
-        absent: [],
-      };
-      setAttendanceRecords([...attendanceRecords, newRecord]);
-      showSuccessMessage("Attendance added successfully!");
+      showSuccessMessage(data.message);
+    } catch (error) {
+      showErrorMessage(error.message || "Failed to add/update attendance");
     }
 
-    // Reset input fields
     setFirstName("");
     setLastName("");
     setAttendanceDate("");
@@ -101,9 +109,14 @@ const Attendance = () => {
 
   const handleDeleteAttendance = (id) => {
     if (window.confirm("Are you sure you want to delete this record?")) {
-      setAttendanceRecords(
-        attendanceRecords.filter((record) => record.id !== id)
-      );
+      setAttendanceRecords((prevRecords) => {
+        const updatedRecords = prevRecords.filter((record) => record.id !== id);
+        localStorage.setItem(
+          "attendanceRecords",
+          JSON.stringify(updatedRecords)
+        );
+        return updatedRecords;
+      });
       showSuccessMessage("Attendance record deleted successfully!");
     }
   };
@@ -124,27 +137,53 @@ const Attendance = () => {
       return;
     }
 
-    setAttendanceRecords((prevRecords) =>
-      prevRecords.map((record) => {
+    setAttendanceRecords((prevRecords) => {
+      const updatedRecords = prevRecords.map((record) => {
         if (record.id === id) {
           if (type === "present") {
+            if (record.present.includes(actionDate)) {
+              showErrorMessage(
+                `Date ${actionDate} is already marked as present.`
+              );
+              return record;
+            }
+            if (record.absent.includes(actionDate)) {
+              showErrorMessage(
+                `Date ${actionDate} is already marked as absent.`
+              );
+              return record;
+            }
             return { ...record, present: [...record.present, actionDate] };
           } else if (type === "absent") {
+            if (record.absent.includes(actionDate)) {
+              showErrorMessage(
+                `Date ${actionDate} is already marked as absent.`
+              );
+              return record;
+            }
+            if (record.present.includes(actionDate)) {
+              showErrorMessage(
+                `Date ${actionDate} is already marked as present.`
+              );
+              return record;
+            }
             return { ...record, absent: [...record.absent, actionDate] };
           }
         }
         return record;
-      })
-    );
+      });
+      localStorage.setItem("attendanceRecords", JSON.stringify(updatedRecords));
+      return updatedRecords;
+    });
+
     showSuccessMessage("Attendance updated successfully!");
     setActionDate("");
     setDropdownOpen({});
-    setTimeout(() => setDropdownOpen({}), 3000); // Close dropdown after 3 seconds
   };
 
   const handleRemoveAttendance = (id, type, date) => {
-    setAttendanceRecords((prevRecords) =>
-      prevRecords.map((record) => {
+    setAttendanceRecords((prevRecords) => {
+      const updatedRecords = prevRecords.map((record) => {
         if (record.id === id) {
           if (type === "present") {
             return {
@@ -159,10 +198,19 @@ const Attendance = () => {
           }
         }
         return record;
-      })
-    );
+      });
+      localStorage.setItem("attendanceRecords", JSON.stringify(updatedRecords));
+      return updatedRecords;
+    });
     showSuccessMessage(`Date ${date} removed from ${type}`);
   };
+
+  useEffect(() => {
+    const savedRecords = localStorage.getItem("attendanceRecords");
+    if (savedRecords) {
+      setAttendanceRecords(JSON.parse(savedRecords));
+    }
+  }, []);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg">
