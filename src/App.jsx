@@ -6,6 +6,7 @@ import TeachersDashboard from './components/TeachersDashboard'; // Teacher's Das
 import Attendance from './components/attendance'; // Attendance component
 import AddGradeForm from './components/AddGradeForm'; // Add grade form component
 
+// Main application component with routing for different pages.
 function App() {
   return (
     <Router>

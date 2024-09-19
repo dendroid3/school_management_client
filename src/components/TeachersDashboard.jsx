@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import { mockTeachers } from '../mocks/teachers';
 import { mockStudents } from '../mocks/students';
-import AddGradeForm from './AddGradeForm'; // Import AddGradeForm component
-import Attendance from './attendance'; // Import Attendance component
+import AddGradeForm from './AddGradeForm';
+import Attendance from './attendance';
 
 const mockAttendance = [
     { id: 1, date: '2024-09-01', status: 'Present' },
@@ -16,13 +16,15 @@ const mockGrades = [
 ];
 
 const TeachersDashboard = () => {
-    const navigate = useNavigate(); // Initialize useNavigate
+    const navigate = useNavigate();
     const [teachers, setTeachers] = useState(mockTeachers);
     const [selectedTeacher, setSelectedTeacher] = useState(null);
     const [students, setStudents] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [attendance, setAttendance] = useState([]);
     const [grades, setGrades] = useState([]);
+    const [showAddStudentForm, setShowAddStudentForm] = useState(false);
+    const [newStudentName, setNewStudentName] = useState('');
 
     const handleTeacherSelect = (teacher) => {
         setSelectedTeacher(teacher);
@@ -39,13 +41,17 @@ const TeachersDashboard = () => {
         setGrades(mockGrades);
     };
 
-    const handleAddStudent = () => {
+    const handleAddStudent = (e) => {
+        e.preventDefault();
+        if (newStudentName.trim() === '') return; // Ignore empty submissions
         const newStudent = {
             id: students.length + 1,
-            name: `New Student ${students.length + 1}`,
-            teacherId: selectedTeacher.id
+            name: newStudentName,
+            teacherId: selectedTeacher.id,
         };
         setStudents([...students, newStudent]);
+        setNewStudentName('');
+        setShowAddStudentForm(false);
     };
 
     const handleRemoveStudent = (studentId) => {
@@ -53,15 +59,15 @@ const TeachersDashboard = () => {
     };
 
     const handleEditGrades = () => {
-        navigate('/add-grade'); // Navigate to AddGradeForm
+        navigate('/add-grade');
     };
 
     const handleEditAttendance = () => {
-        navigate('/attendance', { state: { attendanceRecords: attendance } }); // Pass attendance records
+        navigate('/attendance', { state: { attendanceRecords: attendance } });
     };
 
     const handleLogout = () => {
-        navigate('/'); // Redirects to the landing page
+        navigate('/');
     };
 
     return (
@@ -104,10 +110,25 @@ const TeachersDashboard = () => {
                         <div className="mb-6 p-4 bg-blue-100 shadow-md rounded-lg">
                             <button
                                 className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                                onClick={handleAddStudent}
+                                onClick={() => setShowAddStudentForm(!showAddStudentForm)}
                             >
-                                Add Student
+                                {showAddStudentForm ? 'Cancel' : 'Add Student'}
                             </button>
+                            {showAddStudentForm && (
+                                <form onSubmit={handleAddStudent} className="mb-4">
+                                    <input
+                                        type="text"
+                                        value={newStudentName}
+                                        onChange={(e) => setNewStudentName(e.target.value)}
+                                        placeholder="Enter student name"
+                                        required
+                                        className="p-2 border rounded"
+                                    />
+                                    <button type="submit" className="ml-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                        Add
+                                    </button>
+                                </form>
+                            )}
                             <ul className="list-disc pl-5 space-y-2">
                                 {students.map(student => (
                                     <li
