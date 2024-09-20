@@ -1,6 +1,8 @@
+// src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
+import Auth from './components/Auth';
 import Dashboard from './components/dashboard'; // Principal's Dashboard
 import TeachersDashboard from './components/TeachersDashboard'; // Teacher's Dashboard
 import Attendance from './components/attendance'; // Attendance component
@@ -13,16 +15,20 @@ function App() {
       <Routes>
         {/* Default landing page */}
         <Route path="/" element={<LandingPage />} />
-        
+
+        {/* Authentication routes */}
+        <Route path="/auth/principal" element={<Auth userType="principal" />} />
+        <Route path="/auth/teacher" element={<Auth userType="teacher" />} />
+
         {/* Principal dashboard */}
         <Route path="/dashboard" element={<Dashboard />} />
-        
+
         {/* Teacher dashboard */}
         <Route path="/teacher-dashboard" element={<TeachersDashboard />} />
 
         {/* Attendance page */}
         <Route path="/attendance" element={<Attendance />} />
-        
+
         {/* Add grade form page */}
         <Route path="/add-grade" element={<AddGradeForm />} />
       </Routes>
