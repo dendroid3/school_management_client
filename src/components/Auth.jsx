@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Auth = ({ userType }) => {
@@ -7,70 +7,19 @@ const Auth = ({ userType }) => {
   const [isSignup, setIsSignup] = useState(false);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
-  const [principalExists, setPrincipalExists] = useState(false);
 
-  useEffect(() => {
-    const checkPrincipalExists = async () => {
-      const response = await fetch("http://127.0.0.1:8000/users/");
-      if (response.ok) {
-        const data = await response.json();
-        setPrincipalExists(data.some(user => user.user_type === 'principal'));
-      }
-    };
-    checkPrincipalExists();
-  }, []);
-
-  const handleSignup = async (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
-    if (userType === 'principal' && principalExists) {
-      setMessage('A principal already exists. Please log in.');
-      return;
-    }
-
-    const response = await fetch("http://127.0.0.1:8000/signup/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        password,
-        user_type: userType,
-      }),
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      if (userType === 'principal') {
-        setPrincipalExists(true);
-      }
-      alert(data.message);
-      navigate(userType === 'principal' ? '/dashboard' : '/teacher-dashboard');
-    } else {
-      setMessage(data.detail);
-    }
+    // Placeholder for signup logic
+    alert('Signup logic goes here.');
+    navigate(userType === 'principal' ? '/dashboard' : '/teacher-dashboard');
   };
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    const response = await fetch("http://127.0.0.1:8000/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        username,
-        password,
-      }),
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      localStorage.setItem('token', data.access_token); // Store the JWT token
-      navigate(userType === 'principal' ? '/dashboard' : '/teacher-dashboard');
-    } else {
-      setMessage(data.detail);
-    }
+    // Placeholder for login logic
+    alert('Login logic goes here.');
+    navigate(userType === 'principal' ? '/dashboard' : '/teacher-dashboard');
   };
 
   return (
