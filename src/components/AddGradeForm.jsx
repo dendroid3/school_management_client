@@ -48,7 +48,7 @@ const AddGradeForm = () => {
     // Ensure valid score and student name
     if (studentName && numericScore >= 0 && numericScore <= 100) {
       const grade = getGrade(numericScore);
-      
+
       // Check for duplicate grade submission
       const existingStudent = students.find((student) => student.name === studentName);
 
@@ -95,6 +95,20 @@ const AddGradeForm = () => {
     setScore(student.score);
   };
 
+  // Handle deleting a student grade
+  const handleDeleteGrade = async (studentId) => {
+    const confirmation = window.confirm('Are you sure you want to delete this grade?');
+    if (!confirmation) return;
+
+    try {
+      await axios.delete(`http://127.0.0.1:8000/grades/${studentId}`);
+      setStudents(students.filter((student) => student.id !== studentId)); // Remove deleted student from UI
+    } catch (error) {
+      console.error('Error deleting grade:', error);
+      setError('Failed to delete grade.');
+    }
+  };
+
   return (
     <div className="max-w-lg mx-auto p-4">
       {/* Grade Submission Form */}
@@ -130,7 +144,7 @@ const AddGradeForm = () => {
 
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-blue-300"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-blue-300 transition duration-300 ease-in-out"
         >
           {selectedStudent ? 'Update Grade' : 'Submit Grade'}
         </button>
@@ -157,10 +171,16 @@ const AddGradeForm = () => {
                 <td className="px-4 py-2">{student.grade}</td>
                 <td className="px-4 py-2">
                   <button
-                    className="text-sm text-blue-600 underline hover:text-blue-800"
+                    className="text-sm text-blue-600 underline hover:text-blue-800 hover:bg-blue-100 transition duration-300 ease-in-out rounded px-2 py-1 mr-2"
                     onClick={() => handleEditStudent(student)}
                   >
                     Edit
+                  </button>
+                  <button
+                    className="text-sm text-red-600 underline hover:text-red-800 hover:bg-red-100 transition duration-300 ease-in-out rounded px-2 py-1"
+                    onClick={() => handleDeleteGrade(student.id)}
+                  >
+                    Delete
                   </button>
                 </td>
               </tr>
