@@ -1,17 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-
-// Mock Data for demonstration
-const mockTeachers = [
-  { id: 1, name: 'John Doe' },
-  { id: 2, name: 'Jane Smith' },
-];
-
-const mockStudents = [
-  { id: 1, name: 'Alice', grade: 'A', attendance: '95%', subject: 'Math', teacherId: 1, gradeDate: '2024-09-15', attendanceDate: '2024-09-17' },
-  { id: 2, name: 'Bob', grade: 'B', attendance: '88%', subject: 'Math', teacherId: 1, gradeDate: '2024-09-10', attendanceDate: '2024-09-17' },
-  { id: 3, name: 'Charlie', grade: 'A+', attendance: '100%', subject: 'English', teacherId: 2, gradeDate: '2024-09-12', attendanceDate: '2024-09-16' },
-  { id: 4, name: 'David', grade: 'B+', attendance: '90%', subject: 'English', teacherId: 2, gradeDate: '2024-09-13', attendanceDate: '2024-09-16' },
-];
+import axios from 'axios';
 
 function Dashboard() {
   const [teachers, setTeachers] = useState([]);
@@ -22,17 +10,24 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const popoverRef = useRef(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      // Simulate a data fetching delay
-      setTimeout(() => {
-        setTeachers(mockTeachers);
-        setStudents(mockStudents);
-        setLoading(false);
-      }, 3000);
-    };
+  // Function to fetch data from the API
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [teachersResponse] = await Promise.all([
+        axios.get('http://127.0.0.1:8000/teachers'),
+        
+      ]);
+      setTeachers(teachersResponse.data);
+      //setStudents(studentsResponse.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -48,24 +43,31 @@ function Dashboard() {
     setNewTeacherName(e.target.value);
   };
 
-  const handleAddTeacherSubmit = (e) => {
+  const handleAddTeacherSubmit = async (e) => {
     e.preventDefault();
     if (newTeacherName.trim() === '') return;
 
-    const newTeacher = {
-      id: teachers.length + 1,
-      name: newTeacherName
-    };
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/teachers', { name: newTeacherName });
+      const newTeacher = response.data;
+      setTeachers((prevTeachers) => [...prevTeachers, newTeacher]);
+    } catch (error) {
+      console.error('Error adding teacher:', error);
+    }
 
-    setTeachers([...teachers, newTeacher]);
     setNewTeacherName('');
     setShowAddTeacherForm(false);
   };
 
-  const handleDeleteTeacher = (teacherId) => {
-    setTeachers(teachers.filter(t => t.id !== teacherId));
-    if (selectedTeacher === teacherId) {
-      setSelectedTeacher(null);
+  const handleDeleteTeacher = async (teacherId) => {
+    try {
+      await axios.delete(`http://127.0.0.1:8000/teachers/${teacherId}`);
+      setTeachers((prevTeachers) => prevTeachers.filter(t => t.id !== teacherId));
+      if (selectedTeacher === teacherId) {
+        setSelectedTeacher(null);
+      }
+    } catch (error) {
+      console.error('Error deleting teacher:', error);
     }
   };
 

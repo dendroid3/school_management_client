@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockTeachers } from '../mocks/teachers';
-import { mockStudents } from '../mocks/students';
-import StudentForm from './StudentForm'; // Import the StudentForm component
-import Attendance from './attendance'; // Import Attendance component
-import AddGradeForm from './AddGradeForm'; // Import AddGradeForm component
+import axios from 'axios';
+//import { mockTeachers } from '../mocks/teachers'; // Keep mock teachers
+import { mockStudents } from '../mocks/students'; // Keep mock students
+import StudentForm from './StudentForm'; 
+import Attendance from './attendance'; 
+import AddGradeForm from './AddGradeForm';
 
 const mockAttendance = [
     { id: 1, date: '2024-09-01', status: 'Present' },
@@ -18,13 +19,27 @@ const mockGrades = [
 
 const TeachersDashboard = () => {
     const navigate = useNavigate();
-    const [teachers] = useState(mockTeachers);
+    const [teachers, setTeachers] = useState([]); // Initialize teachers as an empty array
     const [selectedTeacher, setSelectedTeacher] = useState(null);
-    const [students, setStudents] = useState([]);
+    const [students, setStudents] = useState(mockStudents); // Keep using mock students
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [attendance] = useState(mockAttendance);
     const [grades] = useState(mockGrades);
     const [showAddStudentForm, setShowAddStudentForm] = useState(false);
+
+    // Fetch teachers from the API
+    useEffect(() => {
+        const fetchTeachers = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/teachers');
+                setTeachers(response.data); // Assuming response.data is an array of teachers
+            } catch (error) {
+                console.error('Error fetching teachers:', error);
+            }
+        };
+
+        fetchTeachers();
+    }, []);
 
     const handleTeacherSelect = (teacher) => {
         setSelectedTeacher(teacher);
