@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { mockTeachers } from '../mocks/teachers'; // Keep mock teachers
+//import { mockTeachers } from '../mocks/teachers'; // Keep mock teachers
 import { mockStudents } from '../mocks/students'; // Keep mock students
 import StudentForm from './StudentForm'; 
 import Attendance from './attendance'; 
