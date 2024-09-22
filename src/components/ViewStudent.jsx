@@ -2,15 +2,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 const ViewStudent = () => {
+    const navigate = useNavigate();
+
     const { student_id } = useParams();
     const [ fetchedStudent, setFetchedStudent] = useState()
 
     
     useEffect(() => {
         const fetchStudent = async () => {
-            const url = `http://localhost:8000/student/get_one/${student_id}`
+            const url = `https://school-management-api-jn73.onrender.com/student/get_one/${student_id}`
             console.log(url)
             const response = await axios.get(url)
             setFetchedStudent(response.data)
@@ -24,13 +27,17 @@ const ViewStudent = () => {
             const subject = prompt("Enter Subject")
             const mark = prompt("Enter Mark")
 
-            const url = `http://localhost:8000/student/add_grade/${student_id}/${subject}/${mark}`
+            const url = `https://school-management-api-jn73.onrender.com/student/add_grade/${student_id}/${subject}/${mark}`
             console.log(url)
             const response = await axios.get(url)
             console.log(response)
         } catch (error) {
             console.log(error)
         }
+    }
+
+    const handleLogout = () => {
+        navigate('/')
     }
 
     const calculateMeanGrade = (grades) => {
@@ -62,7 +69,7 @@ const ViewStudent = () => {
 
     const handleMarkPresent = async () => {
         try {
-            const url = `http://localhost:8000/student/${student_id}/mark_present`
+            const url = `https://school-management-api-jn73.onrender.com/student/${student_id}/mark_present`
             const response = await axios.get(url)
             alert(response.data)
         } catch (error) {
@@ -75,7 +82,7 @@ const ViewStudent = () => {
     <div className="bg-gray-50 min-h-screen flex flex-col">
         <header className="bg-blue-800 text-white p-4 text-center shadow-md flex justify-between items-center">
             <h1 className="text-4xl font-bold">School Management Dashboard</h1>
-            <button className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200">
+            <button className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200"  onclick={handleLogout}>
             Logout
             </button>
         </header>

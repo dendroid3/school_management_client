@@ -34,7 +34,7 @@ function TeachersDashboard() {
         const fetchMyStudents = async () => {
             try {
                 const user_id = Cookies.get('user_id');
-                const url = `http://localhost:8000/students/${user_id}/get`;
+                const url = `https://school-management-api-jn73.onrender.com/students/${user_id}/get`;
                 
                 const students = await axios.get(url);
                 setMyStudents(students.data);  // Make sure you use students.data
@@ -48,10 +48,14 @@ function TeachersDashboard() {
         fetchMyStudents();
     }, [])
 
+    const handleLogout = () => {
+        navigate('/')
+    }
+
     const fetchMyStudents = async () => {
         try {
             const user_id = Cookies.get('user_id');
-            const url = `http://localhost:8000/students/${user_id}/get`;
+            const url = `https://school-management-api-jn73.onrender.com/students/${user_id}/get`;
             
             const students = await axios.get(url);
             setMyStudents(students.data);  // Make sure you use students.data
@@ -92,7 +96,7 @@ function TeachersDashboard() {
         e.preventDefault();
         try {
             const user_id = Cookies.get('user_id');
-            const url = `http://localhost:8000/student/add/${user_id}/${newStudentRegistrationNumber}/${newStudentFirstName}/${newStudentSurname}/${newStudentLevel}`
+            const url = `https://school-management-api-jn73.onrender.com/student/add/${user_id}/${newStudentRegistrationNumber}/${newStudentFirstName}/${newStudentSurname}/${newStudentLevel}`
 
             const response = await axios.get(url)
             alert(response.data)
@@ -114,7 +118,7 @@ function TeachersDashboard() {
                 return
             }
 
-            const url = `http://localhost:8000/student/delete/${student.id}`
+            const url = `https://school-management-api-jn73.onrender.com/student/delete/${student.id}`
             console.log(url)
             const response = await axios.delete(url)
             alert(response.data)
@@ -132,7 +136,7 @@ function TeachersDashboard() {
         <div className="bg-gray-50 min-h-screen flex flex-col">
         <header className="bg-blue-800 text-white p-4 text-center shadow-md flex justify-between items-center">
             <h1 className="text-4xl font-bold">School Management Dashboard</h1>
-            <button className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200">
+            <button className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200"  onclick={handleLogout} >
             Logout
             </button>
         </header>

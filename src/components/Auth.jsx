@@ -32,7 +32,7 @@ const Auth = ({ userType }) => {
       }
 
 
-      await axios.post('http://localhost:8000/register', local_user_data)
+      await axios.post('https://school-management-api-jn73.onrender.com/register', local_user_data)
 
       navigate(userType === 'principal' ? '/dashboard' : '/teacher-dashboard');
     } catch (error) {

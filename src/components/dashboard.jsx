@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../firebase'; 
@@ -14,12 +15,13 @@ function Dashboard() {
   const [teachersStudents, setSelectedTeacherStudents] = useState(false);
   const [loading, setLoading] = useState(true);
   const popoverRef = useRef(null);
-
+  const navigate = useNavigate();
+  
   // Function to fetch data from the API
   const fetchTeachers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:8000/teachers/get_all')
+      const response = await axios.get('https://school-management-api-jn73.onrender.com/teachers/get_all')
 
       setTeachers(response.data);
       
@@ -34,11 +36,15 @@ function Dashboard() {
     fetchTeachers();
   }, []);
 
+  const handleLogout = () => {
+    navigate('/')
+  }
+
   const handleTeacherClick = async (teacher_id) => {
     setSelectedTeacherStudents(null)
     setSelectedTeacher(teacher_id);
 
-    const url = `http://localhost:8000/teacher/get_students/${teacher_id}`
+    const url = `https://school-management-api-jn73.onrender.com/teacher/get_students/${teacher_id}`
     const response = await axios.get(url)
     console.log(response.data)
     setSelectedTeacherStudents(response.data)
@@ -94,7 +100,7 @@ function Dashboard() {
         role: 1
       }
 
-      await axios.post('http://localhost:8000/register', new_teacher_credential)
+      await axios.post('https://school-management-api-jn73.onrender.com/register', new_teacher_credential)
    
       alert("You have successfully added a new teacher!")
       fetchTeachers();
@@ -110,7 +116,7 @@ function Dashboard() {
   const handleDeleteTeacher = async (teacher) => {
     try {
       console.log(teacher)
-      const response = await axios.delete(`http://localhost:8000/teachers/delete/${teacher.id}`);
+      const response = await axios.delete(`https://school-management-api-jn73.onrender.com/teachers/delete/${teacher.id}`);
       setTeachers((prevTeachers) => prevTeachers.filter(t => t.id !== teacher.id));
       if (selectedTeacher === teacher.id) {
         setSelectedTeacher(null);
@@ -134,7 +140,7 @@ function Dashboard() {
     <div className="bg-gray-50 min-h-screen flex flex-col">
       <header className="bg-blue-800 text-white p-4 text-center shadow-md flex justify-between items-center">
         <h1 className="text-4xl font-bold">School Management Dashboard</h1>
-        <button className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200">
+        <button className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200" onclick={handleLogout}>
           Logout
         </button>
       </header>

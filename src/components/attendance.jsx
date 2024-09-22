@@ -115,7 +115,7 @@ const Attendance = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8000/api/attendance", {
+      const response = await fetch("https://school-management-api-jn73.onrender.com/api/attendance", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
