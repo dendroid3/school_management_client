@@ -58,7 +58,8 @@ const Auth = ({ userType }) => {
     <div className="flex justify-center items-center min-h-screen">
       <form className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full" onSubmit={isSignup ? handleSignup : handleLogin}>
         <h2 className="text-2xl font-bold text-blue-600 mb-6">
-          {isSignup ? 'Sign Up as Principal' : `${userType === 'principal' ? 'Principal' : 'Teacher'} Login`}
+          {`${userType === 'principal' ? 'Principal ' : 'Teacher '}` }
+          {isSignup ? 'Sign up' : 'Log in'}
         </h2>
         <div className="mb-4">
           <label htmlFor="email" className="block text-lg font-semibold mb-2">Email</label>
