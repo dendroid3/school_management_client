@@ -7,6 +7,7 @@ import Dashboard from './components/dashboard'; // Principal's Dashboard
 import TeachersDashboard from './components/TeachersDashboard'; // Teacher's Dashboard
 import Attendance from './components/attendance'; // Attendance component
 import AddGradeForm from './components/AddGradeForm'; // Add grade form component
+import ViewStudent from './components/ViewStudent';
 
 // Main application component with routing for different pages.
 function App() {
@@ -19,6 +20,7 @@ function App() {
         {/* Authentication routes */}
         <Route path="/auth/principal" element={<Auth userType="principal" />} />
         <Route path="/auth/teacher" element={<Auth userType="teacher" />} />
+        <Route path="/student/:student_id" element={<ViewStudent />} />
 
         {/* Principal dashboard */}
         <Route path="/dashboard" element={<Dashboard />} />

@@ -1,25 +1,28 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../firebase'; 
+
 function Dashboard() {
   const [teachers, setTeachers] = useState([]);
   const [students, setStudents] = useState([]);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
-  const [newTeacherName, setNewTeacherName] = useState('');
+  const [newTeacherEmail, setNewTeacherEmail] = useState('');
+  const [newTeacherPassword, setNewTeacherPassword] = useState('');
   const [showAddTeacherForm, setShowAddTeacherForm] = useState(false);
+  const [teachersStudents, setSelectedTeacherStudents] = useState(false);
   const [loading, setLoading] = useState(true);
   const popoverRef = useRef(null);
 
   // Function to fetch data from the API
-  const fetchData = async () => {
+  const fetchTeachers = async () => {
     setLoading(true);
     try {
-      const [teachersResponse] = await Promise.all([
-        axios.get('http://127.0.0.1:8000/teachers'),
-        
-      ]);
-      setTeachers(teachersResponse.data);
-      //setStudents(studentsResponse.data);
+      const response = await axios.get('http://localhost:8000/teachers/get_all')
+
+      setTeachers(response.data);
+      
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -28,44 +31,94 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchTeachers();
   }, []);
 
-  const handleTeacherClick = (teacherId) => {
-    setSelectedTeacher(teacherId);
+  const handleTeacherClick = async (teacher_id) => {
+    setSelectedTeacherStudents(null)
+    setSelectedTeacher(teacher_id);
+
+    const url = `http://localhost:8000/teacher/get_students/${teacher_id}`
+    const response = await axios.get(url)
+    console.log(response.data)
+    setSelectedTeacherStudents(response.data)
+
+    console.log(url)
   };
+
+  const calculateMeanGrade = (grades) => {
+    let total_marks = 0
+    grades.forEach(grade => {
+      total_marks += grade.mark
+    });
+
+    const mean_mark = total_marks / grades.length
+
+    if(mean_mark < 40){
+      return `${mean_mark} (F)`
+    } else if(mean_mark > 40 && mean_mark <= 50){
+      return `${mean_mark} (D)`
+    } else if(mean_mark > 50 && mean_mark <= 60){
+      return `${mean_mark} (C)`
+    } else if(mean_mark > 60 && mean_mark <= 60){
+      return `${mean_mark} (B)`
+    } else {
+      return `${mean_mark} (A)`
+    }
+     
+  }
 
   const handleAddTeacherClick = () => {
     setShowAddTeacherForm(true);
   };
 
-  const handleNewTeacherChange = (e) => {
-    setNewTeacherName(e.target.value);
+  const handleNewTeacherEmailChange = (e) => {
+    setNewTeacherEmail(e.target.value);
+  };
+
+  const handleNewTeacherPasswordChange = (e) => {
+    setNewTeacherPassword(e.target.value);
   };
 
   const handleAddTeacherSubmit = async (e) => {
     e.preventDefault();
-    if (newTeacherName.trim() === '') return;
+    if (newTeacherEmail.trim() === '') return;
+
+    const userCredential = await createUserWithEmailAndPassword(auth, newTeacherEmail, newTeacherPassword);
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/teachers', { name: newTeacherName });
-      const newTeacher = response.data;
-      setTeachers((prevTeachers) => [...prevTeachers, newTeacher]);
+      const new_teacher_credential = {
+        id: userCredential.user.uid,
+        email: newTeacherEmail,
+        password: newTeacherPassword,
+        role: 1
+      }
+
+      await axios.post('http://localhost:8000/register', new_teacher_credential)
+   
+      alert("You have successfully added a new teacher!")
+      fetchTeachers();
+
     } catch (error) {
       console.error('Error adding teacher:', error);
     }
 
-    setNewTeacherName('');
+    setNewTeacherEmail('');
     setShowAddTeacherForm(false);
   };
 
-  const handleDeleteTeacher = async (teacherId) => {
+  const handleDeleteTeacher = async (teacher) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/teachers/${teacherId}`);
-      setTeachers((prevTeachers) => prevTeachers.filter(t => t.id !== teacherId));
-      if (selectedTeacher === teacherId) {
+      console.log(teacher)
+      const response = await axios.delete(`http://localhost:8000/teachers/delete/${teacher.id}`);
+      setTeachers((prevTeachers) => prevTeachers.filter(t => t.id !== teacher.id));
+      if (selectedTeacher === teacher.id) {
         setSelectedTeacher(null);
       }
+
+      fetchTeachers()
+
+      alert(response.data)
     } catch (error) {
       console.error('Error deleting teacher:', error);
     }
@@ -112,12 +165,12 @@ function Dashboard() {
               <ul className="space-y-4 relative z-10">
                 {teachers.map(teacher => (
                   <li key={teacher.id} className="bg-white p-6 rounded-lg shadow-lg relative flex justify-between items-center">
-                    <div className="text-xl font-semibold text-gray-900">{teacher.name}</div>
+                    <div className="text-xl font-semibold text-gray-900">{teacher.email}</div>
                     <div className="flex space-x-4">
                       <button className="px-4 py-2 bg-blue-700 text-white text-sm font-semibold rounded-lg hover:bg-blue-800 transition-colors duration-200" onClick={() => handleTeacherClick(teacher.id)}>
                         View Students
                       </button>
-                      <button className="px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700 transition-colors duration-200" onClick={() => handleDeleteTeacher(teacher.id)}>
+                      <button className="px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700 transition-colors duration-200" onClick={() => handleDeleteTeacher(teacher)}>
                         Delete
                       </button>
                     </div>
@@ -134,11 +187,17 @@ function Dashboard() {
                 <h2 className="text-2xl font-semibold mb-6">Add New Teacher</h2>
                 <form onSubmit={handleAddTeacherSubmit}>
                   <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="teacherName">Teacher Name</label>
-                    <input type="text" id="teacherName" value={newTeacherName} onChange={handleNewTeacherChange} className="border rounded-lg py-2 px-4 w-full" required />
+                    <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="teacherName">Teacher Email</label>
+                    <input type="text" id="teacherName" value={newTeacherEmail} onChange={handleNewTeacherEmailChange} className="border rounded-lg py-2 px-4 w-full" required />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="teacherName">Password</label>
+                    <input type="text" id="teacherName" value={newTeacherPassword} onChange={handleNewTeacherPasswordChange} className="border rounded-lg py-2 px-4 w-full" required />
                   </div>
                   <div className="flex justify-end space-x-4">
-                    <button type="submit" className="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200">Add Teacher</button>
+                    <button type="submit" className="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200">
+                      Add Teacher
+                    </button>
                     <button type="button" onClick={() => setShowAddTeacherForm(false)} className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200">Cancel</button>
                   </div>
                 </form>
@@ -150,31 +209,31 @@ function Dashboard() {
             <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 z-50">
               <div ref={popoverRef} className="bg-white p-8 rounded-lg shadow-lg w-4/5 md:w-3/5 relative">
                 <button className="absolute top-2 right-2 text-gray-500 text-2xl" onClick={() => setSelectedTeacher(null)}>&times;</button>
-                <h2 className="text-2xl font-semibold mb-6">Students under {teachers.find(t => t.id === selectedTeacher)?.name}</h2>
-                <table className="min-w-full divide-y divide-gray-300">
-                  <thead className="bg-gray-100">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attendance</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attendance Date</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {filteredStudents.map(student => (
-                      <tr key={student.id}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{student.name}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.subject}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.grade}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.attendance}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.gradeDate}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.attendanceDate}</td>
+                <h2 className="text-2xl font-semibold mb-6">Students under selected teacher</h2>
+                { (teachersStudents) ? (
+                  <table className="min-w-full divide-y divide-gray-300">
+                    <thead className="bg-gray-100">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registration Number</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mean Grade</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {teachersStudents.map(student => (
+                        <tr key={student.id}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{`${student.first_name} ${student.surname}`}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.registration_number}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.level}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{calculateMeanGrade(student.grades)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p>Loading</p>
+                )}
               </div>
             </div>
           )}
