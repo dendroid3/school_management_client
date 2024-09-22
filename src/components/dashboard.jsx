@@ -13,6 +13,8 @@ function Dashboard() {
   const [newTeacherPassword, setNewTeacherPassword] = useState('');
   const [showAddTeacherForm, setShowAddTeacherForm] = useState(false);
   const [teachersStudents, setSelectedTeacherStudents] = useState(false);
+  const [totalNumberOfStudents, setTotalNumberOfStudents] = useState();
+
   const [loading, setLoading] = useState(true);
   const popoverRef = useRef(null);
   const navigate = useNavigate();
@@ -32,8 +34,18 @@ function Dashboard() {
     }
   };
 
+  const fetchTotalNumberOfStudents = async () => {
+    try {
+      const response = await axios.get('https://school-management-api-jn73.onrender.com/students/get_number')
+      setTotalNumberOfStudents(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
   useEffect(() => {
     fetchTeachers();
+    fetchTotalNumberOfStudents()
   }, []);
 
   const handleLogout = () => {
@@ -151,7 +163,7 @@ function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-green-100 p-6 rounded-lg shadow">
                 <h3 className="text-xl font-semibold text-green-700 mb-2">Total Students</h3>
-                <p className="text-2xl font-bold text-green-900">{students.length}</p>
+                <p className="text-2xl font-bold text-green-900">{totalNumberOfStudents}</p>
               </div>
               <div className="bg-blue-100 p-6 rounded-lg shadow">
                 <h3 className="text-xl font-semibold text-blue-700 mb-2">Total Teachers</h3>
