@@ -47,6 +47,8 @@ const Auth = ({ userType }) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User logged in:', userCredential.user);
+      const details_of_user_registered_on_firebase = userCredential.user;
+      Cookies.set('user_id', details_of_user_registered_on_firebase.uid, { expires: 7 });
       navigate(userType === 'principal' ? '/dashboard' : '/teacher-dashboard');
     } catch (error) {
       setMessage(error.message);
